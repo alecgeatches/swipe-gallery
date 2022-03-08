@@ -1,0 +1,16 @@
+{
+    "apiVersion": 2,
+    "name": "alecg/swipe-gallery",
+    "title": "Swipe Gallery",
+    "icon": "screenoptions",
+    "category": "media",
+    "editorScript": "file:./build/index.js",
+    "editorStyle": "file:./css/editor.css",
+    "style": "file:./css/frontend.css",
+    "attributes": {
+        "images": {
+            "type": "array",
+            "default": []
+        }
+    }
+}

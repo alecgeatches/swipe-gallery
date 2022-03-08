@@ -8,7 +8,6 @@ Author: Alec Geatches
 Author URI: https://github.com/alecgeatches
 License: MIT
 Text Domain: swipe-gallery
-Domain Path: /languages
 */
 
 defined('ABSPATH') or die();
@@ -19,5 +18,4 @@ if (!defined('SWIPE_GALLERY_ROOT_PLUGIN_FILE')) {
     define('SWIPE_GALLERY_ROOT_PLUGIN_FILE', __FILE__);
 }
 
-require_once 'constants.php';
-require_once 'includes.php';
+require_once 'register-block.php';

@@ -2,7 +2,7 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { useState } from '@wordpress/element';
+import { useState, useEffect, useRef } from '@wordpress/element';
 import { useBlockProps, MediaPlaceholder } from '@wordpress/block-editor';
 import { View } from '@wordpress/primitives';
 import SwipeEditorImage from './SwipeEditorImage';
@@ -12,6 +12,36 @@ const Edit = (props) => {
 
 	const blockProps = useBlockProps();
 	const [ currentImages, setCurrentImages ] = useState(attributes.images ?? []);
+	const swipeGalleryRef = useRef();
+
+	useEffect(() => {
+		jQuery(swipeGalleryRef.current).sortable({
+			placeholder: 'swipe-gallery-drag-placeholder',
+			cursor: 'grabbing',
+			tolerance: 'pointer',
+		});
+	}, []);
+
+	useEffect(() => {
+		const $swipeGallery = jQuery(swipeGalleryRef.current);
+
+		$swipeGallery.sortable('option', 'stop', (event, ui) => {
+			const galleryElements = [...ui.item.get(0).parentElement.children];
+			const newIndexOrder = galleryElements.map(e => e.dataset.index);
+			const newImageOrder = newIndexOrder.map(index => currentImages[index]);
+
+			$swipeGallery.sortable('cancel');
+
+			setCurrentImages(newImageOrder);
+		});
+	}, [currentImages])
+
+	useEffect(() => {
+		// Persist fully-loaded images to attributes. Ignore loading images so that a half-loaded blob
+		// image isn't saved with block attributes
+		const loadedImages = currentImages.filter(image => !isImageLoading(image));
+		setAttributes({ images: loadedImages });
+	}, [currentImages]);
 
 	function isImageLoading(image) {
 		return image.url.indexOf('blob:') === 0 && !image.id;
@@ -19,7 +49,7 @@ const Edit = (props) => {
 
 	function handleMediaSelect(newImages) {
 		// When appending to an existing set of images, newImages will only store the current set of uploaded images.
-		// Combine the existing images with the new set.
+		// Combine any existing images with the new set.
 		const allImages = lodash.uniqBy([...currentImages, ...newImages], (image) => {
 			return image.id ? image.id : image.url;
 		}).map(image => {
@@ -29,13 +59,7 @@ const Edit = (props) => {
 			};
 		});
 
-		// Store partially- and fully-loaded images together in internal state, so that a half-loaded blob
-		// image isn't saved with block attributes
 		setCurrentImages(allImages);
-
-		// Persist fully-loaded images to attributes
-		const loadedImages = allImages.filter(image => !isImageLoading(image));
-		setAttributes({ images: loadedImages });
 	}
 
 	const mediaPlaceholderDefaults = {
@@ -56,9 +80,10 @@ const Edit = (props) => {
 		</View>;
 	} else {
 		const isAnyImageLoading = currentImages.some(isImageLoading);
+		const lastRowCount = currentImages.length % 4;
 
 		return <View { ...blockProps }>
-			<div className="swipe-gallery">
+			<div className={`swipe-gallery swipe-gallery-last-row-${lastRowCount}`} ref={swipeGalleryRef}>
 				{ currentImages.map((image, index) => <SwipeEditorImage image={ image } index={ index } />) }
 			</div>
 

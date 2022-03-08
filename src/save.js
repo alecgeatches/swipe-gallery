@@ -2,7 +2,7 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { useBlockProps, RichText } from '@wordpress/block-editor';
+import { useBlockProps } from '@wordpress/block-editor';
 import { View } from '@wordpress/primitives';
 
 const Save = (props) => {
@@ -22,4 +22,5 @@ const Save = (props) => {
 		</ul>
 	</View>;
 };
+
 export default Save;

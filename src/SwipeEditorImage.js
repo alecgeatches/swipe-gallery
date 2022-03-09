@@ -1,7 +1,11 @@
-import { Spinner } from '@wordpress/components';
+import { __ } from '@wordpress/i18n';
+import { Spinner, Button, Modal } from '@wordpress/components';
+import { useState } from '@wordpress/element';
 
 const SwipeEditorImage = (props) => {
-	const { image, index } = props;
+	const [ isDeleteModalVisible, setIsDeleteModalVisible ] = useState(false);
+
+	const { image, index, onRemoveClick } = props;
 	const figureProps = {
 		key: index,
 		'data-index': index,
@@ -14,8 +18,22 @@ const SwipeEditorImage = (props) => {
 		</figure>;
 	}
 
-	return <figure { ...figureProps }>
+	function handleRemoveClick() {
+		setIsDeleteModalVisible(false);
+		onRemoveClick(index);
+	}
+
+	return <figure className="swipe-gallery-item-loaded" { ...figureProps }>
 		<img src={ image.url } />
+
+		<button className="swipe-gallery-item-remove" title={ __('Remove Image', 'alecg-swipe-gallery') } onClick={ () => setIsDeleteModalVisible(true) }>
+			<span class="dashicons dashicons-no-alt"></span>
+		</button>
+
+		{ isDeleteModalVisible && <Modal className="swipe-gallery-item-remove-modal" title={ __('Remove image from gallery?', 'alecg-swipe-gallery') } onRequestClose={ () => setIsDeleteModalVisible(false) }>
+			<Button variant="primary" onClick={ () => handleRemoveClick() }>{ __('Remove', 'alecg-swipe-gallery') }</Button>
+			<Button onClick={ () => setIsDeleteModalVisible(false) }>{ __('Cancel', 'alecg-swipe-gallery') }</Button>
+		</Modal>}
 	</figure>;
 };
 

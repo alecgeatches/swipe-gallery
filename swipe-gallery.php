@@ -7,7 +7,7 @@ Version: 1.0.0
 Author: Alec Geatches
 Author URI: https://github.com/alecgeatches
 License: MIT
-Text Domain: swipe-gallery
+Text Domain: alecg-swipe-gallery
 */
 
 defined('ABSPATH') or die();

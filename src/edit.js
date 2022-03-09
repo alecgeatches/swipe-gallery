@@ -16,8 +16,9 @@ const Edit = (props) => {
 
 	useEffect(() => {
 		jQuery(swipeGalleryRef.current).sortable({
-			placeholder: 'swipe-gallery-drag-placeholder',
 			cursor: 'grabbing',
+			disabled: true,
+			placeholder: 'swipe-gallery-drag-placeholder',
 			tolerance: 'pointer',
 		});
 	}, []);
@@ -41,6 +42,9 @@ const Edit = (props) => {
 		// image isn't saved with block attributes
 		const loadedImages = currentImages.filter(image => !isImageLoading(image));
 		setAttributes({ images: loadedImages });
+
+		const isLoading = loadedImages.length !== currentImages.length;
+		jQuery(swipeGalleryRef.current).sortable('option', 'disabled', isLoading);
 	}, [currentImages]);
 
 	function isImageLoading(image) {
@@ -62,6 +66,11 @@ const Edit = (props) => {
 		setCurrentImages(allImages);
 	}
 
+	function handleRemoveClick(index) {
+		const newImages = [...currentImages.slice(0, index), ...currentImages.slice(index + 1)];
+		setCurrentImages(newImages);
+	}
+
 	const mediaPlaceholderDefaults = {
 		allowedTypes: ['image'],
 		multiple: true,
@@ -73,8 +82,8 @@ const Edit = (props) => {
 			<MediaPlaceholder
 				{ ...mediaPlaceholderDefaults }
 				labels={ {
-					title: __('Swipe Gallery', 'swipe-gallery'),
-					instructions: __('Drag, upload, or select images to be displayed in the gallery.'),
+					title: __('Swipe Gallery', 'alecg-swipe-gallery'),
+					instructions: __('Drag, upload, or select images to be displayed in the gallery.', 'alecg-swipe-gallery'),
 				} }
 			/>
 		</View>;
@@ -84,11 +93,11 @@ const Edit = (props) => {
 
 		return <View { ...blockProps }>
 			<div className={`swipe-gallery swipe-gallery-last-row-${lastRowCount}`} ref={swipeGalleryRef}>
-				{ currentImages.map((image, index) => <SwipeEditorImage image={ image } index={ index } />) }
+				{ currentImages.map((image, index) => <SwipeEditorImage image={ image } index={ index } onRemoveClick={ handleRemoveClick } />) }
 			</div>
 
 			{ (!isSelected && !isAnyImageLoading) && <p className="swipe-gallery-upload-text">
-				{ __('Add to swipe gallery...') }
+				{ __('Add to swipe gallery...', 'alecg-swipe-gallery') }
 			</p> }
 
 			{ (isSelected && !isAnyImageLoading) && <MediaPlaceholder

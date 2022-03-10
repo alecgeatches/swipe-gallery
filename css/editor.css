@@ -1,29 +1,33 @@
-.wp-block-alecg-swipe-gallery .swipe-gallery {
+.wp-block-alecg-swipe-gallery .sortable-gallery {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
 }
 
-.wp-block-alecg-swipe-gallery .swipe-gallery.swipe-gallery-last-row-2::after {
+.wp-block-alecg-swipe-gallery .sortable-gallery.sortable-gallery-last-row-2::after {
     content: "";
     flex: auto;
     flex: 0 0 49%;
 }
 
-.wp-block-alecg-swipe-gallery .swipe-gallery.swipe-gallery-last-row-3::after {
+.wp-block-alecg-swipe-gallery .sortable-gallery.sortable-gallery-last-row-3::after {
     content: "";
     flex: auto;
     flex: 0 0 23.5%;
 }
 
-.wp-block-alecg-swipe-gallery .swipe-gallery figure {
+.wp-block-alecg-swipe-gallery .sortable-gallery-item {
     cursor: grab;
     flex: 0 0 23.5%;
     margin: 0 0 2% 0;
     position: relative;
 }
 
-.wp-block-alecg-swipe-gallery .swipe-gallery figure img {
+.wp-block-alecg-swipe-gallery .swipe-gallery-item {
+    margin: 0;
+}
+
+.wp-block-alecg-swipe-gallery .swipe-gallery-item img {
     width: 100%;
     height: 100px;
     object-fit: cover;
@@ -31,23 +35,23 @@
     box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
 }
 
-.wp-block-alecg-swipe-gallery .swipe-gallery .swipe-gallery-item-loading {
+.wp-block-alecg-swipe-gallery .swipe-gallery-item.swipe-gallery-item-loading {
     align-items: center;
     display: flex;
     justify-content: center;
     background-color: #ddd;
 }
 
-.wp-block-alecg-swipe-gallery .swipe-gallery .swipe-gallery-item-loading img {
+.wp-block-alecg-swipe-gallery .swipe-gallery-item.swipe-gallery-item-loading img {
     opacity: 0.3;
     box-shadow: none;
 }
 
-.wp-block-alecg-swipe-gallery .swipe-gallery .swipe-gallery-item-loading .components-spinner {
+.wp-block-alecg-swipe-gallery .swipe-gallery-item.swipe-gallery-item-loading .components-spinner {
     position: absolute;
 }
 
-.wp-block-alecg-swipe-gallery .swipe-gallery button.swipe-gallery-item-remove {
+.wp-block-alecg-swipe-gallery .swipe-gallery-item button.swipe-gallery-item-remove {
     background: rgba(255, 255, 255, 0.65);
     border: none;
     color: #000;
@@ -61,7 +65,7 @@
     top: 0;
 }
 
-.wp-block-alecg-swipe-gallery .swipe-gallery button.swipe-gallery-item-remove .dashicons {
+.wp-block-alecg-swipe-gallery .swipe-gallery-item button.swipe-gallery-item-remove .dashicons {
     display: block;
 }
 
@@ -93,6 +97,10 @@
 
 .wp-block-alecg-swipe-gallery .sortable-ghost img {
     visibility: hidden;
+}
+
+.wp-block-alecg-swipe-gallery .sortable-drag {
+    touch-action: none;
 }
 
 .wp-block-alecg-swipe-gallery .sortable-drag button {

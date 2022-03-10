@@ -6,36 +6,61 @@ import { useState, useEffect, useRef } from '@wordpress/element';
 import { useBlockProps, MediaPlaceholder } from '@wordpress/block-editor';
 import { View } from '@wordpress/primitives';
 import SwipeEditorImage from './SwipeEditorImage';
+import Sortable from 'sortablejs';
+
+import { useRefEffect, useMergeRefs } from '@wordpress/compose';
 
 const Edit = (props) => {
 	const { attributes, setAttributes, isSelected } = props;
-
 	const blockProps = useBlockProps();
 	const [ currentImages, setCurrentImages ] = useState(attributes.images ?? []);
-	const swipeGalleryRef = useRef();
 
-	useEffect(() => {
-		jQuery(swipeGalleryRef.current).sortable({
-			cursor: 'grabbing',
-			disabled: true,
-			placeholder: 'swipe-gallery-drag-placeholder',
-			tolerance: 'pointer',
+	const swipeGalleryRef = useRef();
+	const swipeGalleryRefEffect = useRefEffect((element) => {
+		Sortable.create(element, {
+			draggable: '.swipe-gallery-item',
+			filter: 'button',
 		});
+
+		// Prevent parent block from canceling dragstart event
+		function onGalleryDrag(event) {
+			event.stopPropagation();
+		}
+
+		element.addEventListener('dragstart', onGalleryDrag);
+
+		return () => {
+			element.removeEventListener('dragstart', onGalleryDrag);
+			Sortable.get(element).destroy();
+		};
 	}, []);
 
 	useEffect(() => {
-		const $swipeGallery = jQuery(swipeGalleryRef.current);
+		if(swipeGalleryRef.current === null) {
+			return;
+		}
 
-		$swipeGallery.sortable('option', 'stop', (event, ui) => {
-			const galleryElements = [...ui.item.get(0).parentElement.children];
-			const newIndexOrder = galleryElements.map(e => e.dataset.index);
-			const newImageOrder = newIndexOrder.map(index => currentImages[index]);
+		Sortable.get(swipeGalleryRef.current).option('onEnd', (event) => {
+			if(event.oldIndex === event.newIndex) {
+				return;
+			}
 
-			$swipeGallery.sortable('cancel');
+			// Revert DOM changes
+			const items = swipeGalleryRef.current.children;
+			if (event.oldIndex > event.newIndex) {
+				event.from.insertBefore(event.item, items[event.oldIndex+1]);
+			} else {
+				event.from.insertBefore(event.item, items[event.oldIndex]);
+			}
 
-			setCurrentImages(newImageOrder);
+			// Persist changes to state
+			let reorderedImages = [...currentImages];
+			const [imageToMove] = reorderedImages.splice(event.oldIndex, 1);
+			reorderedImages.splice(event.newIndex, 0, imageToMove);
+
+			setCurrentImages(reorderedImages);
 		});
-	}, [currentImages])
+	}, [currentImages]);
 
 	useEffect(() => {
 		// Persist fully-loaded images to attributes. Ignore loading images so that a half-loaded blob
@@ -44,7 +69,10 @@ const Edit = (props) => {
 		setAttributes({ images: loadedImages });
 
 		const isLoading = loadedImages.length !== currentImages.length;
-		jQuery(swipeGalleryRef.current).sortable('option', 'disabled', isLoading);
+
+		if(swipeGalleryRef.current) {
+			Sortable.get(swipeGalleryRef.current).option('disabled', isLoading);
+		}
 	}, [currentImages]);
 
 	function isImageLoading(image) {
@@ -89,11 +117,10 @@ const Edit = (props) => {
 		</View>;
 	} else {
 		const isAnyImageLoading = currentImages.some(isImageLoading);
-		const lastRowCount = currentImages.length % 4;
 
 		return <View { ...blockProps }>
-			<div className={`swipe-gallery swipe-gallery-last-row-${lastRowCount}`} ref={swipeGalleryRef}>
-				{ currentImages.map((image, index) => <SwipeEditorImage image={ image } index={ index } onRemoveClick={ handleRemoveClick } />) }
+			<div className={`swipe-gallery swipe-gallery-last-row-${currentImages.length % 4}`} ref={useMergeRefs([swipeGalleryRef, swipeGalleryRefEffect])}>
+				{ currentImages.map((image, index) => <SwipeEditorImage image={ image } index={ index } key={ index } onRemoveClick={ handleRemoveClick } />) }
 			</div>
 
 			{ (!isSelected && !isAnyImageLoading) && <p className="swipe-gallery-upload-text">

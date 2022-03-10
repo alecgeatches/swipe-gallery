@@ -82,7 +82,19 @@
     margin-top: 0;
 }
 
-.wp-block-alecg-swipe-gallery .swipe-gallery-drag-placeholder {
+.wp-block-alecg-swipe-gallery .sortable-ghost {
     background-color: #ddd;
-    border: 1px solid #ccc;
+    box-shadow: inset 0 0 0 1px #ccc;
+}
+
+.wp-block-alecg-swipe-gallery .sortable-ghost button {
+    visibility: hidden;
+}
+
+.wp-block-alecg-swipe-gallery .sortable-ghost img {
+    visibility: hidden;
+}
+
+.wp-block-alecg-swipe-gallery .sortable-drag button {
+    visibility: hidden;
 }

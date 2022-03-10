@@ -7,12 +7,11 @@ const SwipeEditorImage = (props) => {
 
 	const { image, index, onRemoveClick } = props;
 	const figureProps = {
-		key: index,
-		'data-index': index,
+		'data-id': index,
 	};
 
 	if (image.url.indexOf('blob:') === 0 && !image.id) {
-		return <figure className="swipe-gallery-item-loading" { ...figureProps }>
+		return <figure className="swipe-gallery-item swipe-gallery-item-loading" { ...figureProps }>
 			<img src={ image.url } />
 			<Spinner />
 		</figure>;
@@ -23,7 +22,7 @@ const SwipeEditorImage = (props) => {
 		onRemoveClick(index);
 	}
 
-	return <figure className="swipe-gallery-item-loaded" { ...figureProps }>
+	return <figure className="swipe-gallery-item swipe-gallery-item-loaded" { ...figureProps }>
 		<img src={ image.url } />
 
 		<button className="swipe-gallery-item-remove" title={ __('Remove Image', 'alecg-swipe-gallery') } onClick={ () => setIsDeleteModalVisible(true) }>

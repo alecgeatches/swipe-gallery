@@ -5,13 +5,14 @@ import { useState } from '@wordpress/element';
 const SwipeEditorImage = (props) => {
 	const [ isDeleteModalVisible, setIsDeleteModalVisible ] = useState(false);
 
-	const { image, index, onRemoveClick } = props;
+	const { image, index, onRemoveClick, aspectRatio } = props;
+	const aspectRatioClassName = `swipe-gallery-item-aspect-ratio-${aspectRatio}`;
 	const figureProps = {
 		'data-id': index,
 	};
 
 	if (image.url.indexOf('blob:') === 0 && !image.id) {
-		return <figure className="swipe-gallery-item swipe-gallery-item-loading" { ...figureProps }>
+		return <figure className={ `swipe-gallery-item swipe-gallery-item-loading ${aspectRatioClassName}` } { ...figureProps }>
 			<img src={ image.url } />
 			<Spinner />
 		</figure>;
@@ -22,7 +23,7 @@ const SwipeEditorImage = (props) => {
 		onRemoveClick(index);
 	}
 
-	return <figure className="swipe-gallery-item swipe-gallery-item-loaded" { ...figureProps }>
+	return <figure className={ `swipe-gallery-item swipe-gallery-item-loaded ${aspectRatioClassName}` } { ...figureProps }>
 		<img src={ image.url } />
 
 		<button className="swipe-gallery-item-remove" title={ __('Remove Image', 'alecg-swipe-gallery') } onClick={ () => setIsDeleteModalVisible(true) }>

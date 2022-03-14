@@ -11,6 +11,23 @@
         "images": {
             "type": "array",
             "default": []
+        },
+        "aspectRatio": {
+            "enum": [
+                "16-9",
+                "4-3",
+                "3-2",
+                "1-1"
+            ],
+            "default": "3-2"
+        },
+        "desktopItemsPerRow": {
+            "type": "integer",
+            "default": 4
+        },
+        "mobileItemsPerRow": {
+            "type": "integer",
+            "default": 2
         }
     }
 }

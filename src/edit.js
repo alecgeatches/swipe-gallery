@@ -2,12 +2,13 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { useState, useEffect, useRef } from '@wordpress/element';
+import { useState, useEffect } from '@wordpress/element';
 import { useBlockProps, MediaPlaceholder } from '@wordpress/block-editor';
 import { View } from '@wordpress/primitives';
 import _ from 'lodash';
 import SortableGallery from './sortable-gallery';
 import SwipeEditorImage from './swipe-editor-image';
+import SwipeInspectorControls from './swipe-inspector-controls';
 
 const Edit = (props) => {
 	const { attributes, setAttributes, isSelected } = props;
@@ -50,8 +51,12 @@ const Edit = (props) => {
 		onSelect: handleMediaSelect,
 	};
 
+	const swipeInspectorControls = <SwipeInspectorControls attributes={ attributes } setAttributes={ setAttributes }></SwipeInspectorControls>;
+
 	if(currentImages.length === 0) {
 		return <View { ...blockProps }>
+			{ swipeInspectorControls }
+
 			<MediaPlaceholder
 				{ ...mediaPlaceholderDefaults }
 				labels={ {
@@ -64,8 +69,16 @@ const Edit = (props) => {
 		const isAnyImageLoading = currentImages.some(isImageLoading);
 
 		return <View { ...blockProps }>
-			<SortableGallery items={ currentImages } onItemsChange={ handleGalleryChange } isDisabled={ isAnyImageLoading } >
-				{ currentImages.map(image => <SwipeEditorImage image={ image } />) }
+			{ swipeInspectorControls }
+
+			<SortableGallery
+				items={ currentImages }
+				onItemsChange={ handleGalleryChange }
+				isDisabled={ isAnyImageLoading }
+				desktopItemsPerRow={ attributes.desktopItemsPerRow }
+				mobileItemsPerRow={ attributes.mobileItemsPerRow }
+			>
+				{ currentImages.map(image => <SwipeEditorImage image={ image } aspectRatio={ attributes.aspectRatio } />) }
 			</SortableGallery>
 
 			{ (!isSelected && !isAnyImageLoading) && <p className="swipe-gallery-upload-text">

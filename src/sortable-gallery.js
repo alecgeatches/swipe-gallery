@@ -4,7 +4,14 @@ import { useRefEffect, useMergeRefs } from '@wordpress/compose';
 import $ from 'jquery';
 
 const SortableGallery = (props) => {
-	const { items, onItemsChange, children, isDisabled = false } = props;
+	const {
+		items,
+		onItemsChange,
+		children,
+		isDisabled = false,
+		desktopItemsPerRow,
+		mobileItemsPerRow
+	} = props;
 
 	const sortableRef = useRef();
 	const sortableRefEffect = useRefEffect((element) => {
@@ -12,11 +19,12 @@ const SortableGallery = (props) => {
 			cursor: 'grabbing',
 			tolerance: 'pointer',
 			classes: {
-				'ui-sortable-disabled': 'sortable-gallery-disabled',
 				'ui-sortable-helper': 'item-dragged',
 				'ui-sortable-placeholder': 'sortable-gallery-item',
 			},
 			placeholder: 'item-placeholder',
+			appendTo: $(element).closest('.wp-block-alecg-swipe-gallery'),
+			disabled: isDisabled,
 		});
 
 		return () => {
@@ -57,7 +65,10 @@ const SortableGallery = (props) => {
 	if(items.length === 0) {
 		return null;
 	} else {
-		return <div className={ `sortable-gallery sortable-gallery-last-row-${items.length % 4}` } ref={ mergedSortableRef }>
+		const desktopClassName = `sortable-items-per-row-desktop-${desktopItemsPerRow}`;
+		const mobileClassName = `sortable-items-per-row-mobile-${mobileItemsPerRow}`;
+
+		return <div className={ `sortable-gallery ${desktopClassName} ${mobileClassName} ${isDisabled && 'sortable-gallery-disabled'}` } ref={ mergedSortableRef }>
 			{ children.map((child, index) => {
 				child.props.onRemoveClick = () => handleRemoveClick(index);
 

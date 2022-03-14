@@ -35,6 +35,7 @@ const Edit = (props) => {
 			return {
 				id: image.id,
 				url: image.url,
+				title: image.title,
 			};
 		});
 

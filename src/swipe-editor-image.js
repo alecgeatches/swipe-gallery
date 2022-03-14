@@ -24,7 +24,7 @@ const SwipeEditorImage = (props) => {
 	}
 
 	return <figure className={ `swipe-gallery-item swipe-gallery-item-loaded ${aspectRatioClassName}` } { ...figureProps }>
-		<img src={ image.url } />
+		<img src={ image.url } alt={ image.title || '' } />
 
 		<button className="swipe-gallery-item-remove" title={ __('Remove Image', 'alecg-swipe-gallery') } onClick={ () => setIsDeleteModalVisible(true) }>
 			<span class="dashicons dashicons-no-alt"></span>

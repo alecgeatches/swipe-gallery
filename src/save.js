@@ -9,17 +9,20 @@ const Save = (props) => {
 	const blockProps = useBlockProps.save();
 
 	const { attributes } = props;
+	const { aspectRatio, desktopItemsPerRow, mobileItemsPerRow, images = [] } = attributes ;
 
-	const images = attributes.images ?? [];
+	const aspectRatioClassName = `swipe-gallery-item-aspect-ratio-${aspectRatio}`;
+	const desktopClassName = `swipe-items-per-row-desktop-${desktopItemsPerRow}`;
+	const mobileClassName = `swipe-items-per-row-mobile-${mobileItemsPerRow}`;
 
 	return <View { ...blockProps }>
-		<ul>
+		<div class={ `swipe-gallery ${desktopClassName} ${mobileClassName}` }>
 			{ images.map(image => {
-				return <li>
-					<div class="swipe-gallery-media-item" data-id={image.id}>{image.id}</div>
-				</li>
+				return <figure class={`swipe-gallery-item ${aspectRatioClassName}`}>
+					<img src={ image.url } alt={ image.title || '' } />
+				</figure>
 			}) }
-		</ul>
+		</div>
 	</View>;
 };
 

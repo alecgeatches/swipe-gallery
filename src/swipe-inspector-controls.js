@@ -1,6 +1,3 @@
-/**
- * WordPress dependencies
- */
 import { __ } from '@wordpress/i18n';
 import { InspectorControls } from '@wordpress/block-editor';
 import { PanelBody, SelectControl, RangeControl } from '@wordpress/components';

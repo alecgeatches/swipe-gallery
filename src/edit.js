@@ -1,6 +1,3 @@
-/**
- * WordPress dependencies
- */
 import { __ } from '@wordpress/i18n';
 import { useState, useEffect } from '@wordpress/element';
 import { useBlockProps, MediaPlaceholder } from '@wordpress/block-editor';

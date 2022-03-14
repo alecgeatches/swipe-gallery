@@ -1,9 +1,7 @@
-/**
- * WordPress dependencies
- */
 import { __ } from '@wordpress/i18n';
 import { useBlockProps } from '@wordpress/block-editor';
 import { View } from '@wordpress/primitives';
+import PhotoswipeGallery from './photoswipe-gallery';
 
 const Save = (props) => {
 	const blockProps = useBlockProps.save();
@@ -23,6 +21,8 @@ const Save = (props) => {
 				</figure>
 			}) }
 		</div>
+
+		<PhotoswipeGallery />
 	</View>;
 };
 

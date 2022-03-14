@@ -1,62 +1,51 @@
 import { __ } from '@wordpress/i18n';
 import { useEffect, useRef } from '@wordpress/element';
 import { useRefEffect, useMergeRefs } from '@wordpress/compose';
-import Sortable from 'sortablejs';
+import $ from 'jquery';
 
 const SortableGallery = (props) => {
 	const { items, onItemsChange, children, isDisabled = false } = props;
 
-	const swipeGalleryRef = useRef();
-	const swipeGallerySetupRef = useRefEffect((element) => {
-		Sortable.create(element, {
-			draggable: '.sortable-gallery-item',
-			filter: 'button',
+	const sortableRef = useRef();
+	const sortableRefEffect = useRefEffect((element) => {
+		const sortable = $(element).sortable({
+			cursor: 'grabbing',
+			tolerance: 'pointer',
+			classes: {
+				'ui-sortable-disabled': 'sortable-gallery-disabled',
+				'ui-sortable-helper': 'item-dragged',
+				'ui-sortable-placeholder': 'sortable-gallery-item',
+			},
+			placeholder: 'item-placeholder',
 		});
 
-		// Prevent parent block from canceling dragstart event
-		function onGalleryDrag(event) {
-			event.stopPropagation();
-		}
-
-		element.addEventListener('dragstart', onGalleryDrag);
-
 		return () => {
-			element.removeEventListener('dragstart', onGalleryDrag);
-			Sortable.get(element).destroy();
+			sortable.sortable('destroy');
 		};
 	}, []);
+	const mergedSortableRef = useMergeRefs([sortableRef, sortableRefEffect]);
 
-	// Rearrange internal state after DOM change
+	// Send reordered items to parent on sortable end event and cancel DOM mutations
 	useEffect(() => {
-		if(swipeGalleryRef.current === null) {
+		if(sortableRef.current === undefined) {
 			return;
 		}
 
-		Sortable.get(swipeGalleryRef.current).option('onEnd', (event) => {
-			if(event.oldIndex === event.newIndex) {
-				return;
-			}
+		const $sortable = $(sortableRef.current);
 
-			// Revert DOM changes
-			const domChildren = swipeGalleryRef.current.children;
-			if (event.oldIndex > event.newIndex) {
-				event.from.insertBefore(event.item, domChildren[event.oldIndex+1]);
-			} else {
-				event.from.insertBefore(event.item, domChildren[event.oldIndex]);
-			}
-
-			// Send changed items to parent
-			let reorderedItems = [...items];
-			const [itemToMove] = reorderedItems.splice(event.oldIndex, 1);
-			reorderedItems.splice(event.newIndex, 0, itemToMove);
+		$sortable.sortable('option', 'stop', (event, ui) => {
+			const galleryItems = [...ui.item.get(0).parentElement.children];
+			const newOrder = galleryItems.map(e => e.dataset.id);
+			const reorderedItems = newOrder.map(index => items[index]);
+			$sortable.sortable('cancel');
 
 			onItemsChange(reorderedItems);
 		});
 	}, [items]);
 
 	useEffect(() => {
-		if(swipeGalleryRef.current) {
-			Sortable.get(swipeGalleryRef.current).option('disabled', isDisabled);
+		if(sortableRef.current) {
+			$(sortableRef.current).sortable('option', 'disabled', isDisabled);
 		}
 	}, [isDisabled]);
 
@@ -68,7 +57,7 @@ const SortableGallery = (props) => {
 	if(items.length === 0) {
 		return null;
 	} else {
-		return <div className={`sortable-gallery sortable-gallery-last-row-${items.length % 4}`} ref={useMergeRefs([swipeGalleryRef, swipeGallerySetupRef])}>
+		return <div className={ `sortable-gallery sortable-gallery-last-row-${items.length % 4}` } ref={ mergedSortableRef }>
 			{ children.map((child, index) => {
 				child.props.onRemoveClick = () => handleRemoveClick(index);
 

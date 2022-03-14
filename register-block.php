@@ -17,8 +17,6 @@ class RegisterBlock {
     public static function register_block_assets() {
         $asset_file = include plugin_dir_path(__FILE__) . 'build/index.asset.php';
         $dependencies = array_unique(array_merge([
-            'lodash',
-            'jquery',
             'jquery-ui-sortable',
         ], $asset_file['dependencies']));
 

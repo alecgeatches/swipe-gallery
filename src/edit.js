@@ -5,6 +5,7 @@ import { __ } from '@wordpress/i18n';
 import { useState, useEffect, useRef } from '@wordpress/element';
 import { useBlockProps, MediaPlaceholder } from '@wordpress/block-editor';
 import { View } from '@wordpress/primitives';
+import _ from 'lodash';
 import SortableGallery from './sortable-gallery';
 import SwipeEditorImage from './swipe-editor-image';
 
@@ -18,14 +19,7 @@ const Edit = (props) => {
 		// image isn't saved with block attributes
 		const loadedImages = currentImages.filter(image => !isImageLoading(image));
 		setAttributes({ images: loadedImages });
-
-		const isLoading = loadedImages.length !== currentImages.length;
-		sortableGalleryProps.isDisabled = isLoading;
 	}, [currentImages]);
-
-	const sortableGalleryProps = {
-		isDisabled: false
-	};
 
 	function isImageLoading(image) {
 		return image.url.indexOf('blob:') === 0 && !image.id;
@@ -34,7 +28,7 @@ const Edit = (props) => {
 	function handleMediaSelect(newImages) {
 		// When appending to an existing set of images, newImages will only store the current set of uploaded images.
 		// Combine any existing images with the new set.
-		const allImages = lodash.uniqBy([...currentImages, ...newImages], (image) => {
+		const allImages = _.uniqBy([...currentImages, ...newImages], (image) => {
 			return image.id ? image.id : image.url;
 		}).map(image => {
 			return {
@@ -70,7 +64,7 @@ const Edit = (props) => {
 		const isAnyImageLoading = currentImages.some(isImageLoading);
 
 		return <View { ...blockProps }>
-			<SortableGallery items={ currentImages } onItemsChange={ handleGalleryChange } >
+			<SortableGallery items={ currentImages } onItemsChange={ handleGalleryChange } isDisabled={ isAnyImageLoading } >
 				{ currentImages.map(image => <SwipeEditorImage image={ image } />) }
 			</SortableGallery>
 

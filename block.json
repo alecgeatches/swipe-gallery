@@ -4,9 +4,10 @@
     "title": "Swipe Gallery",
     "icon": "screenoptions",
     "category": "media",
-    "editorScript": "alecg-swipe-gallery-editor",
+    "editorScript": "alecg-swipe-gallery-editor-js",
     "editorStyle": "file:./css/editor.css",
-    "style": "file:./css/frontend.css",
+    "style": "alecg-swipe-gallery-frontend-css",
+    "script": "alecg-swipe-gallery-frontend-js",
     "attributes": {
         "images": {
             "type": "array",

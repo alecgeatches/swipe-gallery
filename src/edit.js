@@ -10,7 +10,7 @@ import SwipeInspectorControls from './swipe-inspector-controls';
 const Edit = (props) => {
 	const { attributes, setAttributes, isSelected } = props;
 	const blockProps = useBlockProps();
-	const [ currentImages, setCurrentImages ] = useState(attributes.images ?? []);
+	const [ currentImages, setCurrentImages ] = useState(attributes.images || []);
 
 	useEffect(() => {
 		// Persist fully-loaded images to attributes. Ignore loading images so that a half-loaded blob
@@ -29,10 +29,13 @@ const Edit = (props) => {
 		const allImages = _.uniqBy([...currentImages, ...newImages], (image) => {
 			return image.id ? image.id : image.url;
 		}).map(image => {
+			const { media_details={} } = image;
 			return {
 				id: image.id,
 				url: image.url,
 				title: image.title,
+				width: media_details.width || 0,
+				height: media_details.height || 0,
 			};
 		});
 

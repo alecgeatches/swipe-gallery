@@ -17,7 +17,7 @@ const Save = (props) => {
 		<div class={ `swipe-gallery ${desktopClassName} ${mobileClassName}` }>
 			{ images.map(image => {
 				return <figure class={`swipe-gallery-item ${aspectRatioClassName}`}>
-					<img src={ image.url } alt={ image.title || '' } />
+					<img src={ image.url } alt={ image.title || '' } data-width={ image.width } data-height={ image.height } />
 				</figure>
 			}) }
 		</div>

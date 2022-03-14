@@ -30,6 +30,7 @@ function openSwipeGallery(swipeGalleryBlock, swipeGalleryItem, index) {
     const pswpElement = swipeGalleryBlock.querySelector('.pswp');
     const gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
         index: index,
+        loop: false,
         showHideOpacity: true,
     });
 

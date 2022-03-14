@@ -56,7 +56,7 @@ class RegisterBlock {
 
         wp_register_style(
             'alecg-photoswipe-skin-css',
-            plugins_url('lib/photoswipe-4.1.3/photoswipe-default-skin.css', __FILE__),
+            plugins_url('lib/photoswipe-4.1.3/default-skin/default-skin.css', __FILE__),
             [] /* dependencies */,
             SWIPE_GALLERY_VERSION
         );

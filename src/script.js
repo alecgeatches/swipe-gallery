@@ -22,6 +22,7 @@ function openSwipeGallery(swipeGalleryBlock, swipeGalleryItem, index) {
 
         return {
             src: img.src,
+            msrc: img.dataset.thumbnailUrl,
             w: img.dataset.width,
             h: img.dataset.height,
         };
@@ -29,6 +30,7 @@ function openSwipeGallery(swipeGalleryBlock, swipeGalleryItem, index) {
 
     const pswpElement = swipeGalleryBlock.querySelector('.pswp');
     const gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+        history: false,
         index: index,
         loop: false,
         showHideOpacity: true,

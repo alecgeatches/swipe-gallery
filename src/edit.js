@@ -15,27 +15,26 @@ const Edit = (props) => {
 	useEffect(() => {
 		// Persist fully-loaded images to attributes. Ignore loading images so that a half-loaded blob
 		// image isn't saved with block attributes
-		const loadedImages = currentImages.filter(image => !isImageLoading(image));
+		const loadedImages = currentImages.filter(image => image.id && image.url && image.thumbnailUrl && image.width && image.height);
 		setAttributes({ images: loadedImages });
 	}, [currentImages]);
-
-	function isImageLoading(image) {
-		return image.url.indexOf('blob:') === 0 && !image.id;
-	}
 
 	function handleMediaSelect(newImages) {
 		// When appending to an existing set of images, newImages will only store the current set of uploaded images.
 		// Combine any existing images with the new set.
-		const allImages = _.uniqBy([...currentImages, ...newImages], (image) => {
+		const allImages = _.uniqBy([...currentImages, ...newImages], image => {
 			return image.id ? image.id : image.url;
 		}).map(image => {
-			const { media_details={} } = image;
+			const { width, height } = image.media_details ? image.media_details : image;
+			const thumbnailUrl = image.media_details ? image.media_details.sizes?.medium?.source_url : image.thumbnailUrl;
+
 			return {
 				id: image.id,
 				url: image.url,
 				title: image.title,
-				width: media_details.width || 0,
-				height: media_details.height || 0,
+				thumbnailUrl,
+				width,
+				height,
 			};
 		});
 
@@ -44,6 +43,10 @@ const Edit = (props) => {
 
 	function handleGalleryChange(changedItems) {
 		setCurrentImages(changedItems);
+	}
+
+	function isImageLoading(image) {
+		return image.url.indexOf('blob:') === 0 && !image.id;
 	}
 
 	const mediaPlaceholderDefaults = {

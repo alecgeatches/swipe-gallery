@@ -2,7 +2,7 @@
 
 ![Gallery with PhotoSwipe Demonstration](https://github.com/alecgeatches/swipe-gallery/blob/assets/swipe-gallery-photoswipe.gif)
 
-Swipe gallery is a WordPress 5.0+ Gutenberg editor plugin that uses [PhotoSwipe](https://photoswipe.com/) to create responsize lightbox galleries.
+Swipe gallery is a WordPress 5.0+ Gutenberg editor plugin that uses [PhotoSwipe](https://photoswipe.com/) to create responsive lightbox galleries.
 
 ### Installation
 
